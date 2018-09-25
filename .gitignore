@@ -1,0 +1,15 @@
+Bitcoind/obj/
+BtcApi.Repository/bin/
+BtcApi.Repository/obj/Debug/edmxResourcesToEmbed/Models/BtcContext.ssdl
+BtcApi.Repository/obj/
+BtcApi.Service/bin/Debug/Newtonsoft.Json.dll
+BtcApi.Service/bin/Debug/Newtonsoft.Json.xml
+BtcApi.Service/obj/
+BtcApi.Tests/bin/
+BtcApi.Tests/obj/
+BtcApi/bin/
+packages/
+.vs/
+Bitcoind/bin/
+BtcApi.Service/bin/
+BtcApi/obj/
