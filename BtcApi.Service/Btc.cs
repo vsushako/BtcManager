@@ -62,6 +62,7 @@ namespace BtcApi.Service
                     var result = await BitcoindApi.SendFrom(wallet.Account, transaction.Address, transaction.Amount);
                     unitOfWork.Transactions.Add(new Transaction
                     {
+                        Id = Guid.NewGuid(),
                         Confirmations = 0,
                         Address = transaction.Address,
                         Account = wallet.Account,
