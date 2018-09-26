@@ -2,11 +2,11 @@
 using BtcApi.Service.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Bitcoind;
 using BtcApi.Repository;
 using BtcApi.Repository.Models;
+using BtcApi.Service.Wallets;
 
 namespace BtcApi.Service
 {
@@ -14,11 +14,13 @@ namespace BtcApi.Service
     {
         internal IBitcoind BitcoindApi { get; set; }
         internal IUnitOfWorkFactory UnitOfWorkFactory { get; set; }
+        internal IWalletsAccessManagerFactory WalletsAccessManagerFactory { get; set; }
 
         public Btc()
         {
             BitcoindApi = new BitcoindApi();
             UnitOfWorkFactory = new UnitOfWorkFactory();
+            WalletsAccessManagerFactory = new WalletsAccessManagerFactory();
         }
 
         /// <summary>
@@ -32,33 +34,11 @@ namespace BtcApi.Service
             // Создаем транзакцию
             using (var unitOfWork = UnitOfWorkFactory.GetUnitOfWork())
             {
-                Wallet wallet = null;
-                do
+                // Получаем кошелек
+                using (var walletManager = WalletsAccessManagerFactory.GetWalletsAccessManager())
                 {
-                // Лочим переменную и ищем кошельки
-                    lock (LockedWallets.Wallets)
-                    {
-                        // Получаем подходящий кошелек
-                        var wallets = Task.Run(() => unitOfWork.Wallets.GetByAmount(transaction.Amount)).Result;
-                        if (wallets == null || !wallets.Any()) throw new Exception("Недостаточно средств на кошельках");
-
-                        foreach (var w in wallets)
-                            if (!LockedWallets.Wallets.Contains(w))
-                            {
-                                wallet = w;
-                                LockedWallets.Wallets.Add(wallet);
-                                break;
-                            }
-                    }
-
-                    if(wallet == null)
-                            Thread.Sleep(100);
-
-                } while (wallet == null);
-                
-                try
-                {
-                    // Отправляем 
+                    var wallet = walletManager.GetWallet(unitOfWork, transaction.Amount);
+                    // Отправляем btc
                     var result = await BitcoindApi.SendFrom(wallet.Account, transaction.Address, transaction.Amount);
                     unitOfWork.Transactions.Add(new Transaction
                     {
@@ -77,14 +57,6 @@ namespace BtcApi.Service
                     unitOfWork.Wallets.Add(wallet);
                     unitOfWork.Commit();
                 }
-                finally 
-                {
-                    lock (LockedWallets.Wallets)
-                    {
-                        LockedWallets.Wallets.Remove(wallet);
-                    }
-                }
-
             }
 
             return new TransactionOutDto { Confirmations = 0, Address­ = transaction.Address, Amount­ = transaction.Amount, Date = date };

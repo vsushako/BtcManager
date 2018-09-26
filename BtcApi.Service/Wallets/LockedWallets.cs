@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using BtcApi.Repository.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BtcApi.Service
+namespace BtcApi.Service.Wallets
 {
     /// <summary>
     /// Класс для блокировки кошельков при транзакциях
@@ -11,7 +11,7 @@ namespace BtcApi.Service
         /// <summary>
         /// Залоченные кошельки
         /// </summary>
-        public static IList<Wallet> Wallets { get; } = new List<Wallet>();
+        public static IDictionary<Guid, IWalletLockManager> Wallets { get; } = new Dictionary<Guid, IWalletLockManager>();
 
     }
 }

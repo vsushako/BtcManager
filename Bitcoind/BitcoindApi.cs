@@ -29,7 +29,7 @@ namespace Bitcoind
             return result.result;
         }
 
-        public async Task<string> SendFrom(string account, string address, double amount)
+        public async Task<string> SendFrom(string account, string address, decimal amount)
         {
             var send = await Sender.Send("sendfrom", new []{ account, address, amount.ToString(CultureInfo.InvariantCulture) });
             var result = JsonConvert.DeserializeObject<ResultModel<string>>(send);

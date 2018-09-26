@@ -41,11 +41,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Btc.cs" />
+    <Compile Include="FactoryUnitOfWork.cs" />
     <Compile Include="IBtc.cs" />
-    <Compile Include="LockedWallets.cs" />
+    <Compile Include="Wallets\IWalletLockManager.cs" />
+    <Compile Include="Wallets\IWalletsAccessManager.cs" />
+    <Compile Include="Wallets\IWalletsAccessManagerFactory.cs" />
+    <Compile Include="Wallets\LockedWallets.cs" />
     <Compile Include="Models\TransactionInDto.cs" />
     <Compile Include="Models\TransactionOutDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wallets\WalletLockManager.cs" />
+    <Compile Include="Wallets\WalletsAccessManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bitcoind\Bitcoind.csproj">

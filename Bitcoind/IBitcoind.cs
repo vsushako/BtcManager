@@ -31,6 +31,6 @@ namespace Bitcoind
         /// <param name="address">адрес куда посылать</param>
         /// <param name="amount">Количсетво</param>
         /// <returns></returns>
-        Task<string> SendFrom(string account, string address, double amount);
+        Task<string> SendFrom(string account, string address, decimal amount);
     }
 }

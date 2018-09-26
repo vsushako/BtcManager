@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BtcApi.Repository.Models;
 using System.Data.Entity;
 using System.Linq;
@@ -8,11 +9,18 @@ namespace BtcApi.Repository.Repository
 {
     public class WalletRepository : Repository<Wallet>, IWalletRepository
     {
-        public WalletRepository(BtcContext context) : base(context) {  }
-        
+        public WalletRepository(BtcContext context) : base(context)
+        {
+        }
+
         public async Task<IList<Wallet>> GetByAmount(decimal amount)
         {
             return await Context.Wallets.Where(w => w.Balance > amount).ToListAsync();
+        }
+
+        public async Task<Wallet> GetFirstByAmountExcept(IEnumerable<Guid> ids, decimal amount)
+        {
+            return await Context.Wallets.FirstOrDefaultAsync(w => !ids.Contains(w.Id));
         }
     }
 }
